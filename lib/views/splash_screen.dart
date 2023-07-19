@@ -1,5 +1,11 @@
+import 'package:flexo_app/storage/get_storage.dart';
 import 'package:flexo_app/views/auth/login_screen.dart';
+import 'package:flexo_app/views/auth/welcomeScreen.dart';
+import 'package:flexo_app/views/dashboard/sports.dart';
+import 'package:flexo_app/views/service_provider/add_category.dart';
 import 'package:flutter/material.dart';
+
+import '../constant/color_constant.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -11,11 +17,27 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    super.initState();
-    Future.delayed(const Duration(seconds: 2), () {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Login()));
+    print('getStoreUserId messsga e==>${Storage().getStoreUserId()}');
+
+
+    Future.delayed(const Duration(seconds: 3), () async {
+      // getVerificationData();
+      if (await Storage().getStoreUserId() == null) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => WelcomeScreen()));
+      } else {
+
+        Storage().getStoreStoreMode().toString() ==
+            'service_provider' ?   Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    AddCategory())):
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => SportsScreen(comingFrom: 'Splash')));
+      }
     });
+    super.initState();
   }
 
   @override
@@ -25,16 +47,13 @@ class _SplashScreenState extends State<SplashScreen> {
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         decoration: const BoxDecoration(
-          gradient: LinearGradient(colors: [
-            Color.fromRGBO(143, 148, 251, 1),
-            Color.fromRGBO(143, 148, 251, 5),
-          ]),
+         color:  Colors.white,
         ),
         child: const Center(
-            child: Text('Flexo',
+            child: Text('Flexiyoo',
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: AppColor.orangeColor,
                   fontSize: 35,
                 ))),
       ),
