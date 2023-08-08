@@ -18,13 +18,16 @@ class ApiUrl {
   static const String getBanners = baseUrl +'get_banners.php';
   static const String verifyAccount = baseUrl +'verify_account.php';
   static const String serviceProviders = baseUrl +'service_providers.php';
-  static const String userList = baseUrl +'user_details.php?role=service_provider';
+  static const String userList = baseUrl +'service_providers.php';
   static const String saveCardDetails = baseUrl +'card_details.php';
   static const String getUserDetails = baseUrl +'user_details.php?id=';
   static const String updateProfile = baseUrl +'update_profile.php';
   static const String addService = baseUrl +'add_service.php';
   static const String getCardInfo = baseUrl +'get_user_card_details.php';
   static const String reSendOTP = baseUrl +'resend_otp.php';
+  static const String deleteService = baseUrl +'delete_service.php';
+  static const String updateService = baseUrl +'update_service.php';
+  static const String addGallery = baseUrl +'add_gallery_image';
 
   static const String  publishablekey= "pk_test_51ND9yxSAsJcPidNRpyH0piUJOCpYzUp3oq3h43WsuKNI2CFWSI5B9JUkNeWZwyU79hpEqnQFcfCl63rT52b0jnwa00TFqbs30w";
   static const String secretkey="sk_test_51ND9yxSAsJcPidNR51vCqmYhPg8028XfcgCMaIFOqLCjWGCXZORjBl0X1L2L26piDQfmV5UYYGoHBcLgB2SOD5ZN00wT9TsKSq";

@@ -246,10 +246,10 @@ class _RegisterState extends State<Register> {
                     return null;
                   },
                 ),
-                userRole == 'Fitness Studio/service provider'
+                userRole == 'service_provider'
                     ? const SizedBox(height: 16)
                     : Container(),
-                userRole == 'Fitness Studio/service provider'
+                userRole == 'service_provider'
                     ? DropdownButtonFormField(
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.zero,

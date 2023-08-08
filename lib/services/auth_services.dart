@@ -10,6 +10,7 @@ import 'package:flexo_app/model/time_slot_model.dart';
 import 'package:flexo_app/services/api_constant.dart';
 import 'package:flexo_app/services/logging_interceptor.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:image_picker/image_picker.dart';
 import '../model/banner_model.dart';
 import '../model/common_response_model.dart';
 import '../model/get_cards_details_model.dart';
@@ -262,13 +263,13 @@ class ApiProvider {
   }) async {
     var map;
     if (Storage().getStoreStoreMode() == 'customer') {
-       map = <String, dynamic>{
+      map = <String, dynamic>{
         'user_id': userId,
         'booking_type': type,
         'provider_id': proiderId,
       };
     } else {
-       map = <String, dynamic>{
+      map = <String, dynamic>{
         'booking_type': type,
         'provider_id': proiderId,
       };
@@ -511,5 +512,104 @@ class ApiProvider {
       print(response.data);
       return CommonResponseModel.fromJson(response.data);
     }
+  }
+
+  Future deleteServiceItem({String? serviceId}) async {
+    String userId = await Storage().getStoreUserId().toString();
+
+    var map = <String, dynamic>{
+      'user_id': userId,
+      'service_id': serviceId,
+    };
+    print(map.toString());
+    var headerOptions = Options(
+      headers: {
+        StorageConst.ACCEPT: "application/json",
+      },
+    );
+
+    Response response = await _dio.post(ApiUrl.deleteService,
+        data: FormData.fromMap(map), options: headerOptions);
+    if (response.statusCode == 200) {
+      print("=====verifyAccount Response====" + response.toString());
+      print(response.data);
+      return CommonResponseModel.fromJson(response.data);
+    }
+  }
+
+  Future updateService(
+      {String? userId,
+      String? catId,
+      serviceTitle,
+      serviceId,
+      price,
+      desc,
+      dur}) async {
+    var map = <String, dynamic>{
+      'user_id': userId,
+      'category_id': catId,
+      'service_title': serviceTitle,
+      'service_id': serviceId,
+      'price': price,
+      'description': desc,
+      'duration': dur,
+    };
+    print(map.toString());
+    var headerOptions = Options(
+      headers: {
+        StorageConst.ACCEPT: "application/json",
+      },
+    );
+
+    Response response = await _dio.post(ApiUrl.updateService,
+        data: FormData.fromMap(map), options: headerOptions);
+    if (response.statusCode == 200) {
+      print("=====addService Response====" + response.toString());
+      print(response.data);
+      return CommonResponseModel.fromJson(response.data);
+    }
+  }
+
+  Future addImages({
+    String? userId,
+    List<XFile>? filepath,
+  }) async {
+    Dio dio = Dio();
+    List uploadList = [];
+    for (var file in filepath!) {
+      var multipartFile = await MultipartFile.fromFile(file.path);
+      uploadList.add(multipartFile);
+    }
+
+    log('updateProfile=====>>${{
+      'user_id': await Storage().getStoreUserId(),
+      'image': uploadList,
+    }}');
+
+    FormData formData = FormData.fromMap({
+      'user_id': await Storage().getStoreUserId(),
+      'image[]': uploadList,
+    });
+    var response = await dio.post(ApiUrl.addGallery,
+        data: formData,
+        options: Options(headers: {
+          StorageConst.ACCEPT: "application/json",
+        }));
+
+    print("Sdggsfg===>>$response");
+    // return response;
+    return CommonResponseModel.fromJson(response.data);
+  }
+  Future<ServiceModel> getServicesList() async {
+
+    var headerOptions = Options(
+      headers: {
+        StorageConst.ACCEPT: "application/json",
+      },
+    );
+
+    Response response = await _dio.get(ApiUrl.serviceList, options: headerOptions);
+    log("serviceList=====>>>${response}");
+    return ServiceModel.fromJson(response.data);
   }
 }

@@ -1,7 +1,7 @@
 class ServiceProviderModel {
   bool? status;
   String? message;
-  List<Services>? services;
+  List<User>? services;
 
   ServiceProviderModel({this.status, this.message, this.services});
 
@@ -9,9 +9,9 @@ class ServiceProviderModel {
     status = json['status'];
     message = json['message'];
     if (json['services'] != null) {
-      services = <Services>[];
+      services = <User>[];
       json['services'].forEach((v) {
-        services!.add(new Services.fromJson(v));
+        services!.add(new User.fromJson(v));
       });
     }
   }
@@ -27,16 +27,16 @@ class ServiceProviderModel {
   }
 }
 
-class Services {
+class User {
   String? categoryId;
   String? userId;
   String? userImage;
   String? serviceProvider;
 
-  Services(
+  User(
       {this.categoryId, this.userId, this.userImage, this.serviceProvider});
 
-  Services.fromJson(Map<String, dynamic> json) {
+  User.fromJson(Map<String, dynamic> json) {
     categoryId = json['category_id'];
     userId = json['user_id'];
     userImage = json['user_image'];

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../constant/color_constant.dart';
+import '../../constant/math_utils.dart';
+import '../../model/title_subtitle_model.dart';
 import '../../storage/get_storage.dart';
 import 'login_screen.dart';
 
@@ -12,11 +14,15 @@ class RoleScreen extends StatefulWidget {
 }
 
 class _RoleScreenState extends State<RoleScreen> {
-  List<String> roleList = [
-    "Customer",
-    "Fitness Studio/service provider"
+
+  int selectedIndex=0;
+  List<TitleSubtitleModel> levelList=[
+    TitleSubtitleModel(title: "Customer",subtitle: 'I want to start training'),
+    TitleSubtitleModel(title: "Service Provider",subtitle: 'I train 1-2 times a week'),
+
   ];
-  int selectSubscriptionIndex = 0;
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,12 +54,15 @@ class _RoleScreenState extends State<RoleScreen> {
                     color: Colors.grey)),
             const SizedBox(height: 6),
             ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: roleList.length,
+                padding: EdgeInsets.only(top: 16),
+                itemCount: levelList.length,
                 shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return subscription(roleList[index], index);
+
+                itemBuilder: (context,index){
+                  return subscription(index) ;
+
                 }),
+            const SizedBox(height: 18),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: ElevatedButton(
@@ -66,9 +75,9 @@ class _RoleScreenState extends State<RoleScreen> {
                   foregroundColor: AppColor.orangeColor,
                 ),
                 onPressed: () {
-                  if(selectSubscriptionIndex== 0){
+                  if(selectedIndex== 0){
                     Storage().storeMode('Customer');
-                  }else if(selectSubscriptionIndex== 1){
+                  }else if(selectedIndex== 1){
                     Storage().storeMode('service_provider');
                   }else{
                     Storage().storeMode('Customer');
@@ -90,67 +99,87 @@ class _RoleScreenState extends State<RoleScreen> {
     );
   }
 
-  Widget subscription(a, index) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: InkWell(
-        onTap: () {
-          selectSubscriptionIndex = index;
-          Storage().storeMode(a);
-          print('imageList=====>${a}');
-
-          setState(() {});
-        },
-        child: Container(
-          height: 50,
-          decoration: selectSubscriptionIndex == index
-              ? BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  border: Border.all(color: AppColor.orangeColor),
-                )
-              : BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  border: Border.all(color: Colors.black),
-                ),
-          child: Padding(
-            padding: const EdgeInsets.only(right: 18.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                            width: 24,
-                            height: 242,
-                            decoration: selectSubscriptionIndex == index
-                                ? BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                        color: AppColor.orangeColor, width: 7),
-                                  )
-                                : BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                        color: Colors.grey, width: 7),
-                                    color: Colors.white)),
-                      ),
-                    ),
-                    Text(
-                      a,
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          fontStyle: FontStyle.normal),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+  Widget subscription(index) {
+    return Container(
+      width: double.infinity,
+      margin:  EdgeInsets.only(
+        left: 14,
+        top: 15,
+        right: 14,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(
+          getHorizontalSize(
+            7.70,
           ),
+        ),
+        border: Border.all(
+          color:selectedIndex==index? AppColor.orangeColor: AppColor.textGrey,
+          width: getHorizontalSize(
+            0.96,
+          ),
+        ),
+      ),
+      child: InkWell(
+        onTap: (){
+          setState(() {
+            selectedIndex = index;
+            Storage().storeMode( levelList[index].title);
+            print('imageList=====>${levelList[index].title}');
+
+            setState(() {});
+
+          });
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: getPadding(
+                left: 23,
+                top: 28,
+                right: 23,
+              ),
+              child: Text(
+                levelList[index].title,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  color: AppColor.textBlack,
+                  fontSize: getFontSize(
+                    15.396379470825195,
+                  ),
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w500,
+                  height: 1.00,
+                ),
+              ),
+            ),
+            Padding(
+              padding: getPadding(
+                left: 23,
+                top: 7,
+                right: 23,
+                bottom: 25,
+              ),
+              child: Text(
+                levelList[index].subtitle,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  color: AppColor.textBlack,
+                  fontSize: getFontSize(
+                    13.471831321716309,
+                  ),
+                  fontFamily: 'Open Sans',
+                  fontWeight: FontWeight.w400,
+                  height: 1.00,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

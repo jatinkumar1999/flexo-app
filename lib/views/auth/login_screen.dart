@@ -1,5 +1,6 @@
 import 'package:flexo_app/storage/get_storage.dart';
 import 'package:flexo_app/views/auth/forgot_password_screen.dart';
+import 'package:flexo_app/views/auth/providerHomePage.dart';
 import 'package:flexo_app/views/auth/register_screen.dart';
 import 'package:flexo_app/views/dashboard/sports.dart';
 import 'package:flexo_app/views/service_provider/add_category.dart';
@@ -12,6 +13,7 @@ import '../../constant/color_constant.dart';
 import '../../helper_widget.dart';
 import '../../model/login_model.dart';
 import '../../services/auth_services.dart';
+import 'homePage.dart';
 
 class Login extends StatefulWidget {
   Login({Key? key}) : super(key: key);
@@ -229,19 +231,17 @@ class _LoginState extends State<Login> {
       Storage().storeName(loginModel.user?.name ?? '');
       Storage().storeEmail(loginModel.user?.email ?? '');
       Storage().storeMode(loginModel.user?.role ?? '');
-      Storage()
-          .storeUserCategoryId(loginModel.user?.categoryId.toString() ?? '0');
+      Storage().storeUserCategoryId(loginModel.user?.categoryId.toString() ?? '0');
       loginModel.user?.role == 'service_provider'
           ? Navigator.pushAndRemoveUntil(context,
               MaterialPageRoute(builder: (BuildContext context) {
-              return AddCategory();
+              return ProviderHomeScreen();
             }), (r) {
               return false;
             })
           : Navigator.pushAndRemoveUntil(context,
               MaterialPageRoute(builder: (BuildContext context) {
-              return SportsScreen(
-                comingFrom: 'Login',
+              return Home(
               );
             }), (r) {
               return false;

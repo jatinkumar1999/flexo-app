@@ -1,6 +1,7 @@
 import 'package:flexo_app/services/auth_services.dart';
 import 'package:flexo_app/storage/get_storage.dart';
 import 'package:flexo_app/views/auth/payment_screen.dart';
+import 'package:flexo_app/views/auth/providerHomePage.dart';
 import 'package:flexo_app/views/dashboard/sports.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -378,7 +379,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
       Storage().getStoreStoreMode().toString() == 'service_provider'
           ? Navigator.push(
-              context, MaterialPageRoute(builder: (context) => AddCategory()))
+              context, MaterialPageRoute(builder: (context) => ProviderHomeScreen()))
           : Navigator.push(
               context,
               MaterialPageRoute(
@@ -408,7 +409,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
       Storage().getStoreStoreMode().toString() == 'service_provider'
           ? Navigator.push(
-          context, MaterialPageRoute(builder: (context) => AddCategory()))
+          context, MaterialPageRoute(builder: (context) => ProviderHomeScreen()))
           : Navigator.push(
           context,
           MaterialPageRoute(

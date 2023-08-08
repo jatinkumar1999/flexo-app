@@ -1,19 +1,17 @@
 import 'package:flexo_app/appbar.dart';
 import 'package:flexo_app/helper_widget.dart';
-import 'package:flexo_app/model/service_provider_list_model.dart';
-import 'package:flexo_app/model/service_provider_model.dart';
-import 'package:flexo_app/model/sports_model.dart';
 import 'package:flexo_app/services/auth_services.dart';
-import 'package:flexo_app/views/dashboard/GymDetailScreen.dart';
 import 'package:flutter/material.dart';
 
-import '../../app_drawer.dart';
+import '../../constant/color_constant.dart';
+import '../../constant/math_utils.dart';
+import '../../model/service_provider_list_model.dart';
+import '../../model/service_provider_model.dart';
+import '../../widget/spacing.dart';
 
 class DashboardScreen extends StatefulWidget {
-  String catId;
-  String comingFrom;
 
-  DashboardScreen({Key? key, required this.catId, required this.comingFrom})
+  DashboardScreen({Key? key,})
       : super(key: key);
 
   @override
@@ -22,23 +20,27 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   ServiceProviderModel? serviceProviderModel;
-  List<Services>? sportItemList = [];
-  List<User>? usersList = [];
+  List<User>? sportItemList = [];
+  List<Providers>? usersList = [];
   ServiceProviderList? serviceProvider;
-
+  List<String> levelsList =[
+    'Beginner',
+    'Intermediate',
+    'Advanced',
+  ];
+  int selectedIndex=0;
   @override
   void initState() {
-    widget.comingFrom == 'skip'
-        ? getUserList().then((value) {
+ getUserList().then((value) {
             if (value != null) {
-              usersList = value.user;
+              usersList = value.services;
               if (mounted) setState(() {});
               print('getUserList Length=============>${usersList!.length}');
             }
-          })
-        : Future.delayed(const Duration(milliseconds: 300), () {
+          });
+         Future.delayed(const Duration(milliseconds: 300), () {
             print("hit the get Category Api");
-            serviceProviderList(widget.catId).then((value) async {
+            serviceProviderList('').then((value) async {
               if (value != null) {
                 sportItemList = value.services;
                 if (mounted) setState(() {});
@@ -55,89 +57,362 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: MyAppBarPage(title: 'Home'),
-        drawer: myDrawer(context),
-        body: SingleChildScrollView(
-          primary: true,
-          child: Column(
-            children: [
-              SizedBox(
-                height: 16,
-              ),
-             widget.comingFrom == 'skip'?   ListView.builder(
-                 scrollDirection: Axis.vertical,
-                 itemCount: usersList?.length,
-                 shrinkWrap: true,
-                 primary: false,
-                 itemBuilder: (context, index) {
-                   return usersList?.length == 0
-                       ? Center(
-                     child: Text(
-                       'No record found',
-                       style: TextStyle(
-                           fontWeight: FontWeight.w500,
-                           fontSize: 14,
-                           color: Colors.black),
-                     ),
-                   )
-                       : InkWell(
-                       onTap: () {
-                         Navigator.push(
-                             context,
-                             MaterialPageRoute(
-                                 builder: (context) =>
-                                     GymDetailScreen(
-                                       id: usersList![index]
-                                           .id
-                                           .toString(),
-                                       name: usersList![index]
-                                           .name
-                                           .toString(),
-                                       image: usersList![index]
-                                           .image
-                                           .toString(),
-                                       categoryId: usersList![index].categoryId.toString(),
-                                     )));
-                       },
-                       child: serviceItems(usersList![index]));
-                 }): ListView.builder(
-                  itemCount: sportItemList?.length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return sportItemList?.length == 0
-                        ? Center(
-                            child: Text(
-                              'No record found',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 14,
-                                  color: Colors.black),
-                            ),
-                          )
-                        : InkWell(
-                            onTap: () {
-                              /*      Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => GymDetailScreen(
-                                    id: sportItemList![index].userId!,
-                                    name:
-                                    sportItemList![index].serviceProvider!,
-                                    image:
-                                    sportItemList![index].userImage!,
+        body:      Expanded(
+          child: Container(
+            width: size.width,
+            child: SingleChildScrollView(
+              child: Container(
+                height: getVerticalSize(
+                  760.00,
+                ),
+                width: size.width,
+                margin: getMargin(
+                  top: 3,
+                ),
+                child: Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Container(
+                        width: getHorizontalSize(
+                          359.00,
+                        ),
+                        margin: getMargin(
+                          left: 10,
+                          right: 10,
+                          top: 20,
 
-                                  )));*/
-                            },
-                            child: gymItems(sportItemList![index]));
-                  }),
-            ],
+                          bottom: 10,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+
+
+                            Container(
+                              height: getVerticalSize(44),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    margin: getMargin(
+                                      bottom: 1,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: AppColor.borderGrey,
+                                      borderRadius: BorderRadius.circular(
+                                        getHorizontalSize(
+                                          19.23,
+                                        ),
+                                      ),
+                                    ),
+                                    padding: getPadding(
+                                        left: 20,right: 20,
+                                        top: 14,
+                                        bottom: 14
+                                    ),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Padding(
+                                          padding: getPadding(
+                                            left: 0,
+                                            top: 0,
+                                            bottom: 0,
+                                          ),
+                                          child: Text(
+                                            "Clear All",
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.start,
+                                            style: TextStyle(
+                                              color: AppColor.borderGrey,
+                                              fontSize: getFontSize(
+                                                11.538461685180664,
+                                              ),
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w500,
+                                              height: 1.00,
+                                            ),
+                                          ),
+                                        ),
+
+                                      ],
+                                    ),
+                                  ),
+                                  HorizontalSpace(width: 16),
+                                  Expanded(
+                                    child: ListView.separated(
+                                      padding: getPadding(
+                                          left: 0,right:0
+                                      ),
+                                      itemCount: levelsList.length,
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+
+
+                                      itemBuilder: (context,index){
+                                        return GestureDetector(
+                                          onTap: (){
+                                            setState(() {
+                                              selectedIndex=index;
+                                            });
+                                          },
+                                          child: Container(
+                                            padding: getPadding(
+                                              left: 20,
+                                              top: 13,
+                                              right: 20,
+                                              bottom: 14,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: selectedIndex==index?
+                                              AppColor.orangeColor:AppColor.colorWhite),
+                                              color:selectedIndex==index? AppColor.orangeColor:Colors.transparent,
+                                              borderRadius: BorderRadius.circular(
+                                                getHorizontalSize(
+                                                  19.24,
+                                                ),
+                                              ),
+                                            ),
+                                            child: Text(
+                                              levelsList[index],
+                                              overflow: TextOverflow.ellipsis,
+                                              textAlign: TextAlign.start,
+                                              style: TextStyle(
+                                                color:selectedIndex==index?AppColor.colorWhite:AppColor.borderGrey,
+                                                fontSize: getFontSize(
+                                                  11.544000625610352,
+                                                ),
+                                                fontFamily: 'Poppins',
+                                                fontWeight: FontWeight.w500,
+                                                height: 1.00,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }, separatorBuilder:(context, index)=>
+                                        HorizontalSpace(width: 16)
+                                      , ),
+
+
+                                  ),
+                                ],
+                              ),
+                            ),
+
+
+                            Padding(
+                              padding: getPadding(
+                                top: 29,
+                                right: 10,
+                              ),
+                              child: GridView.builder(
+                                shrinkWrap: true,
+                                gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  mainAxisExtent: getVerticalSize(
+                                    162.00,
+                                  ),
+                                  crossAxisCount: 2,
+                                  mainAxisSpacing: getHorizontalSize(
+                                    15.39,
+                                  ),
+                                  crossAxisSpacing: getHorizontalSize(
+                                    15.39,
+                                  ),
+                                ),
+                                physics: BouncingScrollPhysics(),
+                                itemCount: sportItemList!.length,
+                                itemBuilder: (context, index) {
+                                  return gymItems(sportItemList![index]);
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget gymItems(Services sportsData) {
+  Widget gymItems(User sportsData) {
     return Container(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            height: getVerticalSize(
+              115.00,
+            ),
+            width: getHorizontalSize(
+              164.00,
+            ),
+            child: Card(
+              clipBehavior: Clip.antiAlias,
+              elevation: 0,
+              margin: EdgeInsets.all(0),
+              color: AppColor.textGrey,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                  getHorizontalSize(
+                    7.69,
+                  ),
+                ),
+              ),
+              child: Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: Padding(
+                      padding: getPadding(
+                        left: 1,
+                        top: 1,
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                          getHorizontalSize(
+                            7.69,
+                          ),
+                        ),
+                        child:  sportsData.userImage == ""
+                            ? Image.asset(
+                          'assets/new-home-gym.png',
+                          height: getVerticalSize(
+                            114.00,
+                          ),
+                          width: getHorizontalSize(
+                            163.00,
+                          ),
+                          fit: BoxFit.cover,
+                        )
+                            : Image.network(
+                          '${sportsData.userImage}',
+                          height: getVerticalSize(
+                            114.00,
+                          ),
+                          width: getHorizontalSize(
+                            163.00,
+                          ),
+                          fit: BoxFit.cover,
+                        )
+                      ),
+                    ),
+                  ),
+
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: getPadding(
+              top: 12,
+              right: 10,
+            ),
+            child: Text(
+              "Boxing Sessions",
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                color:AppColor.textBlack,
+                fontSize: getFontSize(
+                  15.384614944458008,
+                ),
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w500,
+                height: 1.00,
+              ),
+            ),
+          ),
+          Padding(
+            padding: getPadding(
+              top: 1,
+              right: 10,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Padding(
+                  padding: getPadding(
+                    top: 1,
+                  ),
+                  child: Text(
+                    "Beginner",
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      color: AppColor.orangeColor,
+                      fontSize: getFontSize(
+                        11.538461685180664,
+                      ),
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w500,
+                      height: 1.00,
+                    ),
+                  ),
+                ),
+                Container(
+                  height: getSize(
+                    3.00,
+                  ),
+                  width: getSize(
+                    3.00,
+                  ),
+                  margin: getMargin(
+                    left: 7,
+                    top: 3,
+                    bottom: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColor.textGrey,
+                    borderRadius: BorderRadius.circular(
+                      getHorizontalSize(
+                        1.93,
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: getPadding(
+                    left: 7,
+                    bottom: 1,
+                  ),
+                  child: Text(
+                    "12 min",
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      color: AppColor.textGrey,
+                      fontSize: getFontSize(
+                        11.538461685180664,
+                      ),
+                      fontFamily: 'Open Sans',
+                      fontWeight: FontWeight.w400,
+                      height: 1.00,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    )/*Container(
       padding: const EdgeInsets.symmetric(horizontal: 6),
       width: MediaQuery.of(context).size.width * 0.70,
       child: Card(
@@ -177,7 +452,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         ),
       ),
-    );
+    )*/;
   }
   Widget serviceItems(User user) {
     return Container(
@@ -198,7 +473,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     CircularProgressIndicator(value: downloadProgress.progress),
                 errorWidget: (context, url, error) => Icon(Icons.error),
               ),*/
-                user.image == ""
+                user.userImage == ""
                     ? Image.asset(
                   'assets/placeHolderIg.png',
                   height: 100,
@@ -206,7 +481,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   fit: BoxFit.cover,
                 )
                     : Image.network(
-                  '${user.image}',
+                  '${user.userImage}',
                   height: 100,
                   width: double.infinity,
                   fit: BoxFit.cover,
@@ -214,7 +489,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                user.name ?? '',
+                user.serviceProvider ?? '',
                 // '${'\$'}${'20'}',
                 style: TextStyle(
                     fontWeight: FontWeight.w500,

@@ -38,10 +38,10 @@ class HelperWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  LoadingAnimationWidget.fourRotatingDots(
+                  LoadingAnimationWidget.inkDrop(
                     // color: ColorConstants.splash1,
                     color: AppColor.orangeColor,
-                    size: 80,
+                    size: 40,
                   ),
                   // SizedBox(height: 5,),
                 ],

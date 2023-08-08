@@ -6,6 +6,8 @@ import 'package:flexo_app/views/service_provider/add_category.dart';
 import 'package:flutter/material.dart';
 
 import '../constant/color_constant.dart';
+import 'auth/homePage.dart';
+import 'auth/providerHomePage.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -32,9 +34,9 @@ class _SplashScreenState extends State<SplashScreen> {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    AddCategory())):
+                    ProviderHomeScreen())):
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => SportsScreen(comingFrom: 'Splash')));
+            context, MaterialPageRoute(builder: (context) => Home()));
       }
     });
     super.initState();

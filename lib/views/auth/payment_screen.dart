@@ -14,6 +14,7 @@ import '../../services/auth_services.dart';
 import 'package:flexo_app/storage/get_storage.dart';
 
 import '../../helper_widget.dart';
+import 'homePage.dart';
 
 class PaymentScreen extends StatefulWidget {
   final String comingFrom, catId, serviceId, timeSlotId,providerId;
@@ -102,7 +103,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             expiryDate: expiryDate,
             cardHolderName: cardHolderName,
             cvvCode: cvvCode,
-            bankName: 'Axis Bank',
+            bankName: 'Debit/Credit Cards',
             frontCardBorder:
                 !useGlassMorphism ? Border.all(color: Colors.grey) : null,
             backCardBorder:
@@ -357,8 +358,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => SportsScreen(
-                    comingFrom: 'Payment',
+              builder: (context) => Home(
                   )));
     } else if (_registerModel.status == false) {
       HelperWidget.showToast(message: _registerModel.message);

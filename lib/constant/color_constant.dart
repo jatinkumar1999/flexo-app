@@ -8,4 +8,6 @@ class AppColor{
   static const textBlack = Color(0xFF181725);
   static const textGrey = Color(0xFF656565);
 
+
+
 }

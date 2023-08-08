@@ -2,8 +2,9 @@ class ServiceModel {
   bool? status;
   String? message;
   List<ServiceItem>? services;
+  int? totalRecords;
 
-  ServiceModel({this.status, this.message, this.services});
+  ServiceModel({this.status, this.message, this.services, this.totalRecords});
 
   ServiceModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
@@ -14,6 +15,8 @@ class ServiceModel {
         services!.add(new ServiceItem.fromJson(v));
       });
     }
+    totalRecords = json['total_records'];
+
   }
 
   Map<String, dynamic> toJson() {
@@ -23,6 +26,8 @@ class ServiceModel {
     if (this.services != null) {
       data['services'] = this.services!.map((v) => v.toJson()).toList();
     }
+    data['total_records'] = this.totalRecords;
+
     return data;
   }
 }
@@ -33,13 +38,17 @@ class ServiceItem {
   String? categoryId;
   String? price;
   String? description;
+  String? duration;
+  String? image;
 
   ServiceItem(
       {this.serviceId,
         this.serviceTitle,
         this.categoryId,
         this.price,
-        this.description});
+        this.description,
+        this.duration,
+        this.image});
 
   ServiceItem.fromJson(Map<String, dynamic> json) {
     serviceId = json['service_id'];
@@ -47,6 +56,8 @@ class ServiceItem {
     categoryId = json['category_id'];
     price = json['price'];
     description = json['description'];
+    duration = json['duration'];
+    image = json['image'];
   }
 
   Map<String, dynamic> toJson() {
@@ -56,6 +67,8 @@ class ServiceItem {
     data['category_id'] = this.categoryId;
     data['price'] = this.price;
     data['description'] = this.description;
+    data['duration'] = this.duration;
+    data['image'] = this.image;
     return data;
   }
 }

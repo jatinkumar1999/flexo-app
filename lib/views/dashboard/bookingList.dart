@@ -6,7 +6,6 @@ import 'package:flexo_app/storage/get_storage.dart';
 import 'package:flexo_app/views/dashboard/upcomingBooking.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../app_drawer.dart';
 import '../../constant/color_constant.dart';
 import '../../services/auth_services.dart';
 import 'historyBooking.dart';
@@ -34,7 +33,6 @@ class _BookingListScreenState extends State<BookingListScreen> {
               tabs: [Tab(text: "Upcoming Bookings"), Tab(text: "History")],
             ),
           ),
-          drawer: myDrawer(context),
           body: TabBarView(
             physics: const NeverScrollableScrollPhysics(),
 

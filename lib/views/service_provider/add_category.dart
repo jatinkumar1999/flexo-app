@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../app_drawer.dart';
 import '../../constant/color_constant.dart';
+import '../../constant/math_utils.dart';
 import '../../helper_widget.dart';
 import '../../model/common_response_model.dart';
 import '../../services/auth_services.dart';
@@ -14,7 +14,17 @@ import '../../storage/get_storage.dart';
 import '../dashboard/profile.dart';
 
 class AddCategory extends StatefulWidget {
-  const AddCategory({Key? key}) : super(key: key);
+  final String serviceName, price, description, serviceId, comingFrom, catId;
+
+  const AddCategory({
+    Key? key,
+    required this.serviceName,
+    required this.price,
+    required this.description,
+    required this.comingFrom,
+    required this.serviceId,
+    required this.catId,
+  }) : super(key: key);
 
   @override
   State<AddCategory> createState() => _AddCategoryState();
@@ -26,21 +36,56 @@ class _AddCategoryState extends State<AddCategory> {
   TextEditingController serviceController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   TextEditingController desController = TextEditingController();
+  TextEditingController durationController = TextEditingController();
   final FocusNode _focusNodePassword = FocusNode();
   CommonResponseModel? commonResponseModel;
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    serviceController.text =
+        widget.comingFrom == 'FromServiceList' ? widget.serviceName : '';
+    priceController.text =
+        widget.comingFrom == 'FromServiceList' ? widget.price : '';
+    desController.text =
+        widget.comingFrom == 'FromServiceList' ? widget.description : '';
+    setState(() {});
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        drawer: myDrawer(context),
-        appBar: MyAppBarPage(title: 'Add Service'),
+        backgroundColor: AppColor.colorWhite,
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: AppColor.colorWhite,
+          title: Text(
+            "Add Service",
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: getFontSize(
+                24.008163452148438,
+              ),
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w500,
+              height: 1.00,
+            ),
+          ),
+
+          centerTitle: true,
+        ),
         body: Form(
           key: _formKey,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 24),
                 TextFormField(
@@ -142,26 +187,87 @@ class _AddCategoryState extends State<AddCategory> {
                   },
                 ),
                 const SizedBox(height: 16),
-                const SizedBox(height: 40),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(50),
-                    shape: RoundedRectangleBorder(
+                TextFormField(
+                  controller: durationController,
+                  keyboardType: TextInputType.text,
+                  cursorColor: AppColor.orangeColor,
+                  decoration: InputDecoration(
+                    hintText: "Duration ",
+                    hintStyle: TextStyle(fontSize: 14),
+                    contentPadding: EdgeInsets.zero,
+                    prefixIcon: const Icon(
+                      Icons.description,
+                      color: Colors.grey,
+                    ),
+                    border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(28),
                     ),
-                    backgroundColor: AppColor.orangeColor,
-                    foregroundColor: AppColor.orangeColor,
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: AppColor.orangeColor),
+                      borderRadius: BorderRadius.circular(28),
+                    ),
                   ),
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      addServices(serviceController.text.trim(), priceController.text.trim(), desController.text.trim());
+                  onEditingComplete: () => _focusNodePassword.requestFocus(),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please enter duration name.";
                     }
+
+                    return null;
                   },
-                  child: const Text(
-                    "Submit",
-                    style: TextStyle(color: Colors.white),
-                  ),
                 ),
+                const SizedBox(height: 16),
+                const SizedBox(height: 40),
+                widget.comingFrom == 'FromServiceList'
+                    ? ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(28),
+                          ),
+                          backgroundColor: AppColor.orangeColor,
+                          foregroundColor: AppColor.orangeColor,
+                        ),
+                        onPressed: () {
+
+                          updateServices(
+                              serviceController.text.trim(),
+                          widget.serviceId,
+
+                          priceController.text.trim(),
+                              desController.text.trim(),
+                              durationController.text.trim());
+                        },
+                        child: const Text(
+                          "Submit",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      )
+                    : ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(28),
+                          ),
+                          backgroundColor: AppColor.orangeColor,
+                          foregroundColor: AppColor.orangeColor,
+                        ),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            addServices(
+                                serviceController.text.trim(),
+                                priceController.text.trim(),
+                                desController.text.trim());
+                          }
+                        },
+                        child: const Text(
+                          "Submit",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
               ],
             ),
           ),
@@ -267,8 +373,7 @@ class _AddCategoryState extends State<AddCategory> {
     imagePath = image!.path;
   }
 
-  Future<CommonResponseModel> addServices(
-       service, price, desc) async {
+  Future<CommonResponseModel> addServices(service, price, desc) async {
     var userId = await Storage().getStoreUserId().toString();
     var catId = await Storage().getUserCategoryId().toString();
 
@@ -288,8 +393,39 @@ class _AddCategoryState extends State<AddCategory> {
 
       Navigator.push(context,
           MaterialPageRoute(builder: (BuildContext context) {
-            return ProfileScreen();
-          }));
+        return ProfileScreen();
+      }));
+
+      setState(() {});
+    } else if (commonResponseModel?.status == false) {
+      HelperWidget.showToast(message: commonResponseModel?.message);
+    }
+
+    return commonResponseModel!;
+  }
+
+  Future<CommonResponseModel> updateServices(
+      serviceTitle, serviceId, price, desc, dur) async {
+    var userId = await Storage().getStoreUserId().toString();
+    var catId = await Storage().getUserCategoryId().toString();
+
+    HelperWidget.showProgress(context);
+    commonResponseModel = await ApiProvider().updateService(
+      userId: userId,
+      catId: widget.catId,
+      serviceId: serviceId,
+      serviceTitle: serviceTitle,
+      price: price,
+      desc: desc,
+      dur: dur,
+    );
+    Navigator.pop(context);
+    if (commonResponseModel?.status == true) {
+      HelperWidget.showToast(message: commonResponseModel?.message);
+      serviceController.clear();
+      priceController.clear();
+      desController.clear();
+
 
       setState(() {});
     } else if (commonResponseModel?.status == false) {
